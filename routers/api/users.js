@@ -19,11 +19,12 @@ router.post('/register',(req,res)=>{
         if(user){
           return res.status(400).json({email:'Email aleady exists'})
         }else{
-          const avatar=gravatar(req.body.email,{
+          const avatar=gravatar.url(req.body.email,{
             s:'200',//size
             r:'pg', //rating
             d:'mm' //default
           })
+
           const newUser = new User({
             name:req.body.name,
             email:req.body.email,
@@ -31,7 +32,7 @@ router.post('/register',(req,res)=>{
             password:req.body.password
           })
 
-          bcrypt.getSalt(10,(err,salt)=>{
+          bcrypt.genSalt(10,(err,salt)=>{
             bcrypt.hash(newUser.password,salt,(err,hash)=>{
               if(err) throw err;
               newUser.password = hash;
