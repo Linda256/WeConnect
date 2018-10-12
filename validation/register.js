@@ -23,6 +23,10 @@ function validateRegisterInput(data){
     errors.email = "Email is not valid";
   }
 
+  if(validator.isEmpty(data.email)){
+    errors.email = "Email is required";
+  }
+
   if(validator.isEmpty(data.password)){
     errors.password = "Password is required";
   }
