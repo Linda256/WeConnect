@@ -30,7 +30,8 @@ router.post('/register',(req,res)=>{
   User.findOne({email:req.body.email})
       .then((user)=>{
         if(user){
-          return res.status(400).json({email:'Email aleady exists'})
+          errors.email='Email aleady exists';
+          return res.status(400).json({email:errors.email})
         }else{
           const avatar=gravatar.url(req.body.email,{
             s:'200',//size
