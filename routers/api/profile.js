@@ -50,10 +50,10 @@ router.post('/',passport.authenticate('jwt',{session:false}),(req,res) => {
   //Social
   profileFields.social = {};
   if(req.body.youtube) profileFields.social.youtube = req.body.youtube;
-  if(req.body.twitter) profileFields.social.youtube = req.body.twitter;
-  if(req.body.linkedin) profileFields.social.youtube = req.body.linkedin;
-  if(req.body.facebook) profileFields.social.youtube = req.body.facebook;
-  if(req.body.instagram) profileFields.social.youtube = req.body.instagram;
+  if(req.body.twitter) profileFields.social.twitter = req.body.twitter;
+  if(req.body.linkedin) profileFields.social.linkedin = req.body.linkedin;
+  if(req.body.facebook) profileFields.social.facebook = req.body.facebook;
+  if(req.body.instagram) profileFields.social.instagram = req.body.instagram;
 
   Profile.findOne({ user: req.user.id})
     .then(profile => {
@@ -63,13 +63,20 @@ router.post('/',passport.authenticate('jwt',{session:false}),(req,res) => {
           { user:req.user.id },
           { $set: profileFields},
           { new:true }
-        ).then{profile => res.json(profile)}
+        ).then(profile => res.json(profile))
       } else {
         //Create
-        Profile.
 
         //Check if handle exists
-        Profile.findONe({ handle: profileFields.handle }).then
+        Profile.findONe({ handle: profileFields.handle }).then(profile =>{
+          //if handle exist, response the error message
+          if(profile){
+            errors.handle =" Thaat handle already exist";
+            res.status(400).json(errors);
+          }
+         //if handle not exist, create a new profile;
+          new Profile(profileFields).save().then(profile => res.json(profile));
+        })
       }
     })
 })
