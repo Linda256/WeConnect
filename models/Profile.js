@@ -57,7 +57,7 @@ const ProfileSchema = new Schema({
       }
     }
   ],
-  experience:[
+  education:[
     {
       school:{
         type:String,
@@ -100,11 +100,11 @@ const ProfileSchema = new Schema({
     linkedin:{
       type:String
     },
-    date:{
+  },
+  date:{
       type:Date,
       default: Date.now
     }
-  }
 })
 
 module.exports = Profile = mongoose.model('profile',ProfileSchema);
