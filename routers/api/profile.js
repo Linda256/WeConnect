@@ -3,6 +3,9 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 
+//Load Validation
+const validationProfileInput = require('../../validation/profile.js')
+
 const User = require('../../models/User.js');
 const Profile = require('../../models/Profile.js')
 
@@ -31,6 +34,14 @@ router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
 // @desc    Create and Edit user profile
 // @access  Private
 router.post('/',passport.authenticate('jwt',{session:false}),(req,res) => {
+  const { errors, isValid } = validationProfileInput(req.body);
+
+  //Check Validation
+  if(!isValid){
+    //Return any erros with 400 status
+    return res.status(400).json(errors);
+  }
+
   //Get fields
   const profileFields={};
   profileFields.user=req.user.id;
@@ -68,7 +79,7 @@ router.post('/',passport.authenticate('jwt',{session:false}),(req,res) => {
         //Create
 
         //Check if handle exists
-        Profile.findONe({ handle: profileFields.handle }).then(profile =>{
+        Profile.findOne({ handle: profileFields.handle }).then(profile =>{
           //if handle exist, response the error message
           if(profile){
             errors.handle =" Thaat handle already exist";
