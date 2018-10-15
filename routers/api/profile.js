@@ -145,4 +145,38 @@ router.post('/',passport.authenticate('jwt',{session:false}),(req,res) => {
     })
 })
 
+// @route   POST api/profile/experience
+// @desc    Add experience user profile
+// @access  Private
+router.post('/experience',passport.authenticate('jwt',{session:false}),(req,res)=>{
+  //check validation
+  const {errors,isValid} = validationProfileInput;
+  //if not valid, response with status code and errors
+  if(!isValid){
+    return res.status(404).json(errors)
+  }
+  //search the profile by user.id,
+  //if profile is find, update experience profile
+  // else save experience fields and response with json profile
+  Profile.findOne({user:req.user.id})
+    .then(profile => {
+      const newExp = {
+        title: req.body.title,
+        company: req.body.company,
+        location: req.body.location,
+        from: req.body.from,
+        to: req.body.to,
+        current:req.body.current,
+        description: req.body.description
+      }
+
+      //Add to exp array
+      profile.experience.unshift(newExp);
+
+      profile.save().then(profile=>{
+        res.status(200).json(profile)
+      })
+    })
+})
+
 module.exports = router;
