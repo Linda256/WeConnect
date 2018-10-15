@@ -5,6 +5,7 @@ const passport = require('passport');
 
 //Load Validation
 const validationProfileInput = require('../../validation/profile.js')
+const validateExperienceInput = require('../../validation/experience.js')
 
 const User = require('../../models/User.js');
 const Profile = require('../../models/Profile.js')
@@ -143,21 +144,24 @@ router.post('/',passport.authenticate('jwt',{session:false}),(req,res) => {
         })
       }
     })
-})
+});
 
 // @route   POST api/profile/experience
 // @desc    Add experience user profile
 // @access  Private
-router.post('/experience',passport.authenticate('jwt',{session:false}),(req,res)=>{
+
+router.post('/experience',passport.authenticate('jwt',{session:false}),(req,res) => {
+  console.log(req.body);
   //check validation
-  const {errors,isValid} = validationProfileInput;
+  const {errors,isValid} = validateExperienceInput(req.body);
+  console.log(isValid);
   //if not valid, response with status code and errors
   if(!isValid){
     return res.status(404).json(errors)
   }
   //search the profile by user.id,
-  //if profile is find, update experience profile
-  // else save experience fields and response with json profile
+  //save experience fields and response with json profile
+
   Profile.findOne({user:req.user.id})
     .then(profile => {
       const newExp = {
@@ -173,10 +177,11 @@ router.post('/experience',passport.authenticate('jwt',{session:false}),(req,res)
       //Add to exp array
       profile.experience.unshift(newExp);
 
-      profile.save().then(profile=>{
-        res.status(200).json(profile)
-      })
-    })
-})
+      profile
+      .save()
+      .then(profile =>
+        res.json(profile));
+  })
+});
 
 module.exports = router;
