@@ -4,10 +4,9 @@ const isEmpty =require('./isEmpty');
 function validateProfileInput(data){
   let errors = {};
 
-  data.handle = !isEmpty(data.handle) ? data.email : '';
+  data.handle = !isEmpty(data.handle) ? data.handle : '';
   data.status= !isEmpty(data.status) ? data.status : '';
   data.skills= !isEmpty(data.skills) ? data.skills : '';
-
 
 
   if(!validator.isLength(data.handle,{min:2, max:40})){
