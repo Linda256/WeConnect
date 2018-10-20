@@ -152,10 +152,9 @@ router.post('/',passport.authenticate('jwt',{session:false}),(req,res) => {
 // @access  Private
 
 router.post('/experience',passport.authenticate('jwt',{session:false}),(req,res) => {
-  console.log(req.body);
+
   //check validation
   const {errors,isValid} = validateExperienceInput(req.body);
-  console.log(isValid);
   //if not valid, response with status code and errors
   if(!isValid){
     return res.status(404).json(errors)
@@ -213,10 +212,8 @@ router.delete('/experience/:exp_id',passport.authenticate('jwt',{session:false})
 // @desc    Add education user profile
 // @access  Private
 router.post('/education',passport.authenticate('jwt',{session:false}),(req,res) => {
-  console.log(req.body);
   //check validation
   const {errors,isValid} = validateEducationInput(req.body);
-  console.log(isValid);
   //if not valid, response with status code and errors
   if(!isValid){
     return res.status(404).json(errors)

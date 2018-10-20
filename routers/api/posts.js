@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require ('mongoose');
 const passport = require ('passport');
 
+const Profile = require('../../models/Profile');
 const Post = require('../../models/Post');
 const validationPostInput = require ('../../validation/post');
 
@@ -22,13 +23,31 @@ router.get('/',(req,res) => {
 
 })
 
-// @route   GET api/posts:id
+// @route   GET api/posts/:id
 // @desc    Fetch a post by id
 // @access  Public
 router.get('/:id',(req,res) => {
   Post.findById(req.params.id)
     .then(post => res.json(post))
     .catch(err=> res.status(404).json({noPostFound:'No post found with that ID'}));
+})
+
+// @route   DELETE api/posts/:id
+// @desc    Delete a post by id
+// @access  Pravite
+router.delete('/:id', passport.authenticate('jwt',{session:false}),(req,res) => {
+  Profile.findOne({user:req.user.id})
+  .then(profile => { Post.findById(req.params.id)
+    .then(post =>{
+      //Check for post owner
+      if(post.user.toString() !== req.user.id){
+        return res.status(401).json({notauthorized: 'User not authorized'})
+      }
+      post.remove().then(()=> res.json({success: true}));
+    })
+      .catch(err => res.status(404).json({postnotfound: 'No post found'}))
+  })
+
 })
 
 // @route   POST api/posts/
