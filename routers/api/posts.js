@@ -11,8 +11,24 @@ const validationPostInput = require ('../../validation/post');
 // @access  Public
 router.get('/test',(req,res)=>res.json({msg:"Posts Works"}));
 
+// @route   GET api/posts
+// @desc    Fetch all posts
+// @access  Public
 router.get('/',(req,res) => {
+  Post.find()
+    .sort({date:-1})
+    .then(posts => res.json(posts))
+    .catch(err=> res.status(404).json(err));
 
+})
+
+// @route   GET api/posts:id
+// @desc    Fetch a post by id
+// @access  Public
+router.get('/:id',(req,res) => {
+  Post.findById(req.params.id)
+    .then(post => res.json(post))
+    .catch(err=> res.status(404).json({noPostFound:'No post found with that ID'}));
 })
 
 // @route   POST api/posts/
